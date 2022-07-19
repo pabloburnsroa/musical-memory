@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import AddInput from '../AddInput.component';
 
@@ -29,7 +29,14 @@ describe('Add input component functionality', () => {
     expect(mockedSetTodos).toBeCalled();
   });
 
-  it('input textbox should clear when Add todo button clicked', () => {
-    
-  })
+  it('input textbox should clear when Add todo button clicked', async () => {
+    const user = userEvent.setup();
+    render(<AddInput todos={[]} setTodos={mockedSetTodos} />);
+    const inputElement = screen.getByPlaceholderText(/Add a new todo here.../i);
+    await user.click(inputElement);
+    await user.type(inputElement, 'Feed cat');
+    const buttonElement = screen.getByRole('button', { name: /add todo/i });
+    await userEvent.click(buttonElement);
+    expect(inputElement.value).toBe('');
+  });
 });
